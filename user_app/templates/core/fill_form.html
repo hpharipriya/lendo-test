@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New Customer Application</title>
+</head>
+<body>
+          <h2 class="my-4">Add a new movie</h2>
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+                {{cust_form|crispy}}
+                <button class="btn btn-primary my-4" type="submit">Submit</button>
+          </form>
+</body>
+</html>
