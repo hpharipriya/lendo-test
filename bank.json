@@ -1,0 +1,1 @@
+[{"model": "customer.bank", "pk": 1, "fields": {"name": "bank_api_1", "address": ""}}, {"model": "customer.bank", "pk": 2, "fields": {"name": "bank_api_2", "address": ""}}, {"model": "customer.bank", "pk": 3, "fields": {"name": "bank_api_3", "address": ""}}]
