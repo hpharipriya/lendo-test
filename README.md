@@ -43,7 +43,11 @@ This project assumes that Docker and docker-compose are installed.
 
 Clone this repository 
 ```bash
-clone repository https://github.com/hpharipriya/lendo-BackendDeveloper-Assignment.git
+clone repository https://github.com/hpharipriya/loan_repo.git
+```
+
+```bash
+  cd loan_repo
 ```
 
 ```bash
