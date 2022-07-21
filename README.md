@@ -1,5 +1,5 @@
 
-# Get-loan
+# Loan-app
 
 This project demonstrates a simplified version of a loan request-approval domain where a group of micro services handles the life cycle of a customer application. A customer application represents the intention of a customer to get a loan.
 When a user sends a loan request, a customer application is created in the backend storage and send them to different bank APIs. The bank APIs will process the request and a worker program will check the status of all bank APIs asynchronously and update the Database on reaching final stages like completed or rejected.
@@ -43,9 +43,16 @@ This project assumes that Docker and docker-compose are installed.
 
 Clone this repository 
 ```bash
-git clone https://github.com/hpharipriya/lendo-BackendDeveloper-Assignment.git
+clone repository https://github.com/hpharipriya/lendo-BackendDeveloper-Assignment.git
 ```
-To deploy this project run
+
+```bash
+  cp .env.dist .env
+```
+
+```bash
+  docker-compose build
+```
 
 ```bash
   docker-compose up
