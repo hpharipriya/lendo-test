@@ -5,9 +5,9 @@ services:
     restart: always
     image: postgres:12.7-alpine
     environment:
-      - POSTGRES_DB=app
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=admin123
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
     volumes:
       - ./db_data:/var/lib/postgresql/data
     ports:
@@ -15,18 +15,29 @@ services:
 
   backend:
     container_name: django_backend
-    build: .
+    restart: always
+    image: hpharipriya/loan-app
+#    build: .
+    environment:
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DB_PORT=${DB_PORT}
+      - DB_HOST=${DB_HOST}
+      - Q_URL=${Q_URL}
+
     volumes:
       - ./:/app
     depends_on:
       - database
-    command: bash -c "python manage.py makemigrations && python manage.py migrate && gunicorn -b 0.0.0.0:8000 --worker-class=gevent --worker-connections=1000 --workers=2 core.wsgi"
 #    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+#    command: bash -c "python manage.py makemigrations && python manage.py migrate && gunicorn -b 0.0.0.0:8000 core.wsgi"
 
   nginxrp:
     container_name: nginxrp
     restart: always
-    build: ./nginx-server
+#    build: ./nginx-server
+    image: hpharipriya/loan-nginx
     ports:
       - 80:80
     depends_on:
@@ -38,6 +49,9 @@ services:
     container_name: rabbitmq
     restart: always
     image: rabbitmq:3.9-alpine
+    ports:
+      - 5672:5672
+      - 15672:15672
     volumes:
       - ./rabbitmq_data:/var/lib/rabbitmq
 
@@ -45,33 +59,24 @@ services:
   queue_worker:
     container_name: queue_worker
     restart: always
-    build: .
-    command: python worker.py
+#    build:
+#      context: ./worker
+#      dockerfile: Dockerfile
+    image: hpharipriya/loan-worker
+    environment:
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DB_PORT=${DB_PORT}
+      - DB_HOST=${DB_HOST}
+      - Q_URL=${Q_URL}
     volumes:
       - ./worker:/app
     depends_on:
       - rabbitmq
-      - backend
+      - database
 
-#
-#  celeryworker:
-#    container_name: celeryworker
-#    build: .
-#    volumes:
-#      - ./:/backend
-#    command: celery -A core worker --pool=prefork -l info
-##    command: tail -f /dev/null
-#    depends_on:
-#      - rabbitmq
-#
-#  celeryscheduler:
-#    container_name: celeryscheduler
-#    build: .
-#    volumes:
-#      - ./:/app
-#    command: celery -A core beat -l info
-#    depends_on:
-#      - celeryworker
+#    command: python worker.py
 
   bank_api_1:
     container_name: bank_api_1

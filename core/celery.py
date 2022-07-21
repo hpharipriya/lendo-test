@@ -8,9 +8,9 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
 
 app = Celery("core", broker="amqp://guest@rabbitmq//")
 
-# app.config_from_object("django.conf:settings", namespace="CELERY")
-#
-# # Celery Beat Settings
+app.config_from_object("django.conf:settings", namespace="status_checker")
+
+# Celery Beat Settings
 # app.conf.beat_schedule = {
 #
 #     "periodic_add_numbers": {
@@ -21,7 +21,7 @@ app = Celery("core", broker="amqp://guest@rabbitmq//")
 #     },
 # }
 #
-# app.autodiscover_tasks()
+app.autodiscover_tasks()
 #
 # @app.task(bind=True)
 #

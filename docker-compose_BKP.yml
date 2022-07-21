@@ -1,0 +1,97 @@
+version: "3"
+services:
+  database:
+    container_name: database
+    restart: always
+    image: postgres:12.7-alpine
+    environment:
+      - POSTGRES_DB=app
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin123
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+  backend:
+    container_name: django_backend
+    build: .
+    volumes:
+      - ./:/app
+    depends_on:
+      - database
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && gunicorn -b 0.0.0.0:8000 --worker-class=gevent --worker-connections=1000 --workers=2 core.wsgi"
+#    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+
+  nginxrp:
+    container_name: nginxrp
+    restart: always
+    build: ./nginx-server
+    ports:
+      - 80:80
+    depends_on:
+      - backend
+    volumes:
+      - ./staticfiles:/staticfiles
+
+  rabbitmq:
+    container_name: rabbitmq
+    restart: always
+    image: rabbitmq:3.9-alpine
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ./rabbitmq_data:/var/lib/rabbitmq
+
+
+  queue_worker:
+    container_name: queue_worker
+    restart: always
+    build: .
+    command: python worker.py
+    volumes:
+      - ./worker:/app
+    depends_on:
+      - rabbitmq
+      - backend
+
+
+  celeryworker:
+    container_name: celeryworker
+    build: .
+    volumes:
+      - ./:/backend
+    command: celery -A core worker --pool=prefork -l info
+#    command: tail -f /dev/null
+    depends_on:
+      - rabbitmq
+
+  celeryscheduler:
+    container_name: celeryscheduler
+    build: .
+    volumes:
+      - ./:/app
+    command: celery -A core beat -l info
+    depends_on:
+      - celeryworkerdocker-compose.yml
+
+  bank_api_1:
+    container_name: bank_api_1
+    image: lendoab/interview-service:stable
+    ports:
+      - 8081:8000
+  bank_api_2:
+    container_name: bank_api_2
+    image: lendoab/interview-service:stable
+    ports:
+      - 8082:8000
+  bank_api_3:
+    container_name: bank_api_3
+    image: lendoab/interview-service:stable
+    ports:
+      - 8083:8000
+
+volumes:
+  db_data:
+  rabbitmq_data:

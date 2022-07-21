@@ -4,12 +4,19 @@ from rest_framework.fields import SerializerMethodField
 from .models import Application, BankApplication
 
 
+class SimpleApplicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Application
+        fields = "__all__"
+
+
 class BankApplicationSerializer(serializers.ModelSerializer):
-    bank_apps = SerializerMethodField()
+    # application_details = SimpleApplicationSerializer(many=False, read_only=True)
 
     class Meta:
         model = BankApplication
-        fields = "__all__"
+        fields = ['bank','application','status']
+        depth = 1
 
 
 class ApplicationSerializer(serializers.ModelSerializer):

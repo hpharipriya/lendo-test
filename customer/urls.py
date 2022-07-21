@@ -19,7 +19,7 @@ from . import views
 from rest_framework import routers
 
 router = routers.DefaultRouter()
-router.register(r'app', views.ApplicationViewSet, basename="customer_app")
+router.register(r'api', views.ApplicationViewSet, basename="customer_app")
 urlpatterns = [
-    path('api/', include(router.urls)),
+    path('application/', include(router.urls)),
 ]

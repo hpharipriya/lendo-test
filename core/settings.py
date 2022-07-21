@@ -12,6 +12,13 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import config
+import os
+import environ
+
+env = environ.Env()
+# reading .env file
+environ.Env.read_env()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,6 +35,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['localhost']
 
+# APPEND_SLASH = False
 
 # Application definition
 INSTALLED_APPS = [
@@ -40,8 +48,7 @@ INSTALLED_APPS = [
     'django_celery_results',
     'django_celery_beat',
     'rest_framework',
-    'customer',
-    # 'user_app',
+    'customer'
 ]
 
 MIDDLEWARE = [
@@ -84,15 +91,41 @@ WSGI_APPLICATION = 'core.wsgi.application'
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+# DATABASES = {
+#      "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "app",
+#         "USER": "admin",
+#         "PASSWORD": "admin123",
+#         "HOST": "database",
+#         "PORT": 5432,
+#     }
+# }
+#
 DATABASES = {
      "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "app",
-        "USER": "admin",
-        "PASSWORD": "admin123",
-        "HOST": "database",
-        "PORT": 5432,
+        "NAME": env('DB_NAME'),
+        "USER": env('DB_USER'),
+        "PASSWORD": env('DB_PASS'),
+        "HOST": env('DB_HOST'),
+        "PORT": env('DB_PORT')
     }
+}
+
+# Logs configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
 }
 
 # Password validation
@@ -139,4 +172,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 BANK_URLS = config.BANK_URLS
 FINAL_RESPONSES = config.BANK_FINAL_RESPONSES
-Q_URL = config.Q_URL
+Q_URL = env("Q_URL")
+BANK_INITIAL_RESPONSE = config.BANK_INITIAL_RESPONSE
