@@ -16,8 +16,8 @@ services:
   backend:
     container_name: django_backend
     restart: always
-    image: hpharipriya/loan-app
-#    build: .
+#    image: hpharipriya/loan-app
+    build: .
     environment:
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
@@ -26,18 +26,18 @@ services:
       - DB_HOST=${DB_HOST}
       - Q_URL=${Q_URL}
 
-    volumes:
-      - ./:/app
     depends_on:
       - database
+    volumes:
+      - ./:/app
 #    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
-#    command: bash -c "python manage.py makemigrations && python manage.py migrate && gunicorn -b 0.0.0.0:8000 core.wsgi"
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && gunicorn -b 0.0.0.0:8000 core.wsgi"
 
   nginxrp:
     container_name: nginxrp
     restart: always
-#    build: ./nginx-server
-    image: hpharipriya/loan-nginx
+    build: ./nginx-server
+#    image: hpharipriya/loan-nginx
     ports:
       - 80:80
     depends_on:
@@ -59,10 +59,10 @@ services:
   queue_worker:
     container_name: queue_worker
     restart: always
-#    build:
-#      context: ./worker
-#      dockerfile: Dockerfile
-    image: hpharipriya/loan-worker
+    build:
+      context: ./worker
+      dockerfile: Dockerfile
+#    image: hpharipriya/loan-worker
     environment:
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
@@ -70,8 +70,10 @@ services:
       - DB_PORT=${DB_PORT}
       - DB_HOST=${DB_HOST}
       - Q_URL=${Q_URL}
+
     volumes:
       - ./worker:/app
+
     depends_on:
       - rabbitmq
       - database
