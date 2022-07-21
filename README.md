@@ -25,7 +25,7 @@ When a user sends a loan request, a customer application is created in the backe
 
 ## Architecture
 
-![architecture diagram](https://github.com/hpharipriya/lendo-BackendDeveloper-Assignment/blob/main/flow-diagram.jpg?raw=true)
+![architecture diagram](https://github.com/hpharipriya/loan_repo/blob/main/flow-diagram.jpg?raw=true)
 
 
 ## Operations
