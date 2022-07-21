@@ -43,7 +43,7 @@ This project assumes that Docker and docker-compose are installed.
 
 Clone this repository 
 ```bash
-clone repository https://github.com/hpharipriya/loan_repo.git
+https://github.com/hpharipriya/loan_repo.git
 ```
 
 ```bash
