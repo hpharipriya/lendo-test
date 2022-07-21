@@ -125,6 +125,7 @@ class ApplicationViewSet(viewsets.ModelViewSet):
                     "message": "Success",
                     "data": data
                 }
+                Response.status_code = 200
             except Exception as e:
                 logger.error(e)
                 response = {
